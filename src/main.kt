@@ -17,7 +17,10 @@ fun main() {
     var pairs = collectPairs(wins)
     pairs = lockPairs(pairs, choices.size)
     val winner = selectWinner(pairs)
-    println(choices[winner])
+    if (winner == -1)
+        println("All choices are equally preferred.")
+    else
+        println(choices[winner])
 }
 
 ////PASS EVERYTHING BY REFERENCE OR ELSE
@@ -52,6 +55,9 @@ fun readResponses(fileName: String, choices: Array<String>, wins: Array<Array<In
     File(fileName).forEachLine {
         var response = arrayOf<Array<Int>>()
         var line = it
+        var availableChoices = choices.copyOf()
+        //when the line has been fully processed, lineDone is set to true and breaks the following loop.
+        var lineDone = false
 
         //Each line is a response. Each word is a choice.
         //This code goes through the line word by word, deleting words behind it.
@@ -86,7 +92,12 @@ fun readResponses(fileName: String, choices: Array<String>, wins: Array<Array<In
                 for (i in choices.indices) {
                     if (choices[i] == nextPart) {
                         thisRow += i
+                        availableChoices[i] = ""
                     }
+                }
+                if (line.isBlank() && !lineDone) {
+                    line = availableChoices.joinToString("/")
+                    lineDone = true
                 }
             }
             //Once the word has been turned into an array of integers, usually of
@@ -94,8 +105,10 @@ fun readResponses(fileName: String, choices: Array<String>, wins: Array<Array<In
             response += thisRow
 
         }
+        //Add unused choices to the end of the ballot.
+
         //Once the entire line has been parsed, the completed response is sent to the addWins function
-        //to be counted and added to the wins array
+        //to be counted and added to the wins array.
         addWins(response, wins)
     }
 }
@@ -211,6 +224,8 @@ fun loopLink(w: Int, l: Int, ta: Array<Array<Int>>, locked: Array<Array<Int>>): 
 
 //Determine the winner and return it in integer form.
 fun selectWinner(pairs: Array<Array<Int>>): Int {
+    if (pairs.isEmpty())
+        return -1
     var winner = pairs[0][0]
     //Go through each pair.
     for (i in pairs.indices) {

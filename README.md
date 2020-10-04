@@ -6,3 +6,5 @@ The program reads from two files: a file containing a list of candidates on one 
 Can be run by any Kotlin compiler. I use Intellij Idea. Simply open the project in Intellij Idea, open "main.kt" in the "src" folder, and click run.
 
 https://en.wikipedia.org/wiki/Ranked_pairs
+
+Fun fact for any potential employers out there: I wrote the first commit of this program in two days and only had to fix two typos to get it to run successfully on my third try.
